@@ -15,7 +15,7 @@ int main () {
         if (cadena[i] == goran[j]) {
             goran_score++;
         }
-        if (j == 11) {
+        if (j == 12) {
             j = -1;
         }
         j++;
