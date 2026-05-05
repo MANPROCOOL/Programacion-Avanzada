@@ -9,14 +9,6 @@ int lengstr(char comprobar[82]) {
     return i;
 }
 
-void llenar_matriz(int filas, int columnas, char matriz[filas][columnas], char start[100][82]) {
-    for (int i = 0; i < filas; i++) {
-        for (int j = 0; j < columnas; j++) {
-            matriz[i][j] = start[i][j];
-        }
-    }
-}
-
 void imprimir_matriz(int filas, int columnas, char matriz[filas][columnas]) {
     for (int i = 0; i < filas; i++) {
         for (int j = 0; j < columnas; j++) {
@@ -26,49 +18,72 @@ void imprimir_matriz(int filas, int columnas, char matriz[filas][columnas]) {
     }
 }
 
-void mover_a_la_derecha(int filas, int columnas, char matriz[filas][columnas]) {
-    int limite = columnas - 1;
+// Devuelve la fila donde está el '*' en la columna col
+int valor_columna(int filas, int columnas, char matriz[filas][columnas], int col) {
     for (int i = 0; i < filas; i++) {
-        for (int j = columnas - 1; j >= 0 && limite >= 0; j--) {
-            if (matriz[i][limite] == '*') {limite--;}
-            if (matriz[i][j] == '*' && matriz[i][limite] != '*' ) {
-                matriz[i][j] = '.';
-                matriz[i][limite] = '*';
-                limite--;
+        if (matriz[i][col] == '*') return i;
+    }
+    return -1;
+}
+
+// Intercambia dos columnas
+void swap_columnas(int filas, int columnas, char matriz[filas][columnas], int a, int b) {
+    for (int i = 0; i < filas; i++) {
+        char temp = matriz[i][a];
+        matriz[i][a] = matriz[i][b];
+        matriz[i][b] = temp;
+    }
+}
+
+void ordenar_columnas(int filas, int columnas, char matriz[filas][columnas]) {
+    for (int i = 0; i < columnas - 1; i++) {
+        for (int j = 0; j < columnas - 1 - i; j++) {
+            // asterisco más abajo = valor más alto = va a la derecha
+            if (valor_columna(filas, columnas, matriz, j) < valor_columna(filas, columnas, matriz, j + 1)) {
+                swap_columnas(filas, columnas, matriz, j, j + 1);
             }
         }
     }
 }
-
-void mover_a_la_izquierda(int filas, int columnas, char matriz[filas][columnas]){
-    for (int i = 0; i < filas; i++) {
-        int limite = 0;
-        for (int j = 0; j < columnas; j++) {
-            if (matriz[i][j] == '*') {
-                matriz[i][j] = '.';
-                matriz[i][limite] = '*';
-                limite++;
-            }
-        }
-    }
-}
-
-
 
 int main() {
     int i = 0, columnas;
-    char matriz[100][82];
-    while (fgets(matriz[i++], 82, stdin) != NULL) {
-        if (matriz[i-1][0] == '\n') {
-            i--;
-            columnas = lengstr(matriz[0]);
-            char procesar[i][columnas];
-            llenar_matriz(i, columnas, procesar, matriz);
-            mover_a_la_izquierda(i, columnas, procesar);
-            mover_a_la_derecha(i, columnas, procesar);
-            imprimir_matriz(i, columnas, procesar);
-            i = 0;
+    char lineas[100][82];
+    int primer_log = 1;
+
+    while (fgets(lineas[i], 82, stdin) != NULL) {
+        if (lineas[i][0] == '\n') {
+            if (i > 0) {
+                columnas = lengstr(lineas[0]);
+                char procesar[i][columnas];
+                for (int r = 0; r < i; r++)
+                    for (int c = 0; c < columnas; c++)
+                        procesar[r][c] = lineas[r][c];
+
+                if (!primer_log) printf("\n");
+                primer_log = 0;
+
+                ordenar_columnas(i, columnas, procesar);
+                imprimir_matriz(i, columnas, procesar);
+                i = 0;
+            }
+        } else {
+            i++;
         }
     }
-}
 
+    // Procesar el último log (sin blank line al final)
+    if (i > 0) {
+        columnas = lengstr(lineas[0]);
+        char procesar[i][columnas];
+        for (int r = 0; r < i; r++)
+            for (int c = 0; c < columnas; c++)
+                procesar[r][c] = lineas[r][c];
+
+        if (!primer_log) printf("\n");
+        ordenar_columnas(i, columnas, procesar);
+        imprimir_matriz(i, columnas, procesar);
+    }
+
+    return 0;
+}
