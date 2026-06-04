@@ -1,0 +1,9 @@
+gcc -g -fPIC -c ./aritmetico/promedio.c -o promedio.o
+gcc -shared -o libpromedio.so promedio.o
+gcc -g -c main.c -o main.o
+gcc -o programa_promedio main.o -L. -l:./libpromedio.so
+./programa_promedio
+
+gcc -g -fPIC -c ./sin_extremos/promedio.c -o promedio.o
+gcc -shared -o libpromedio.so promedio.o
+./programa_promedio
