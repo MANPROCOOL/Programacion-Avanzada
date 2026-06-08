@@ -36,16 +36,16 @@ public:
         return (long long)l*b*h;
     }
     bool operator<(Box& comparando){
-		if (l < comparando.getLength()) {return true;}
-		else if (l == comparando.getLength() && b < comparando.getBreadth()) {return true;}
+		if (l < comparando.getLength()) {return true;} //para el elemento de la izq usamos directamente sus atributos
+		else if (l == comparando.getLength() && b < comparando.getBreadth()) {return true;} //con el nombre dentro de la clase (l,b,h)
 		else if (l == comparando.getLength() && b == comparando.getBreadth() && h < comparando.getHeight()) {return true;}
 		else {return false;}
 	}
 };
 
 // Sobrecarga del operador << de forma global
-ostream& operator<<(ostream& out, Box& B) { //no podria ir dentro de la clase porque el operador se ejecutaria
-    out << B.getLength() << " " << B.getBreadth() << " " << B.getHeight(); //lo que tiene a su izquierda
+ostream& operator<<(ostream& out, Box& B) {                                //no podria ir dentro de la clase porque el operador se ejecutaria
+    out << B.getLength() << " " << B.getBreadth() << " " << B.getHeight(); //sobre lo que tiene a su izquierda
     return out;
 }
 
