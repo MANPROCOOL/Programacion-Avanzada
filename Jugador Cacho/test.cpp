@@ -22,7 +22,7 @@ struct ThreadResult {
 };
 
 int main() {
-    const int N = 1000000; // ajusta este numero segun cuantas partidas quieras
+    const int N = 100000; // ajusta este numero segun cuantas partidas quieras
 
     // Juegos en orden de planilla
     const std::vector<std::string> juegos = {
