@@ -99,7 +99,7 @@ public:
 private:
     // ---------------------------------------------------------------------
     // Analiza una chica (valor v) y devuelve la recomendación.
-    // Copia la lógica de JugadorFlores::analizarChica.
+    // Copia la lógica de EvPlayerByPepe::analizarChica.
     // ---------------------------------------------------------------------
     RecomendacionChica analizarChica(const std::vector<int>& dados, int v) const {
         static const std::map<int, std::string> nombreChica = {
