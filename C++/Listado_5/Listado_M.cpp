@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include <iostream>
+using namespace std;
 
 int suma_digitos(long long x) {
     int s = 0;
@@ -8,11 +9,10 @@ int suma_digitos(long long x) {
 
 int main() {
     int N;
-    while (scanf("%d", &N) == 1 && N != 0) {
+    while (cin >> N && N != 0) {
         int sd = suma_digitos(N);
         int p = 11;
         while (suma_digitos((long long)N * p) != sd) p++;
-        printf("%d\n", p);
+        cout << p << "\n";
     }
-    return 0;
 }
