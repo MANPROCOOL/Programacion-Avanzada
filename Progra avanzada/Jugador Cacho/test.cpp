@@ -64,15 +64,15 @@ int main() {
             if (idx >= N) break;
 
             // Crear jugadores y jugar una partida
-            auto flores = std::make_shared<JugadorFlores>();
+            auto flores = std::make_shared<EvPlayerByPepe>();
             auto rival  = std::make_shared<JugadorAleatorio>("Rival");
             Anotador a({flores, rival});
             auto ganadores = a.hacerJugar();
 
-            const Marcador& m = a.marcadores["JugadorFlores"];
+            const Marcador& m = a.marcadores["EvPlayerByPepe"];
             res.sumaTotalPuntos += m.suma;
 
-            if (std::find(ganadores.begin(), ganadores.end(), "JugadorFlores") != ganadores.end())
+            if (std::find(ganadores.begin(), ganadores.end(), "EvPlayerByPepe") != ganadores.end())
                 res.victorias++;
 
             for (const auto& j : juegos) {
@@ -124,7 +124,7 @@ int main() {
 
     // ---- Imprimir resultados (sin tildes) ----
     std::cout << "============================================================" << std::endl;
-    std::cout << "  ANALISIS DE JugadorFlores -- " << N << " partidas vs Aleatorio" << std::endl;
+    std::cout << "  ANALISIS DE EvPlayerByPepe -- " << N << " partidas vs Aleatorio" << std::endl;
     std::cout << "============================================================" << std::endl;
     std::cout << std::fixed << std::setprecision(1);
     std::cout << "  Victorias : " << totalVictorias << " (" << 100.0*totalVictorias/N << "%)" << std::endl;

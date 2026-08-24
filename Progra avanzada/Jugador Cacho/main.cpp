@@ -10,7 +10,7 @@ int main() {
 
   // Agregar JugadorEV
   t.addPlayer(
-      []() { return std::make_shared<JugadorFlores>("Pepe"); });
+      []() { return std::make_shared<EvPlayerByPepe>("Pepe"); });
   // Agregar Jugadores Aleatorios
   t.addPlayer(
       []() { return std::make_shared<JugadorAleatorio>("Bot_Random_1"); });

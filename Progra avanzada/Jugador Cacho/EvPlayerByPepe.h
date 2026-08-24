@@ -13,7 +13,7 @@
 
 using namespace std;
 
-class JugadorFlores : public Jugador { // Basado en la logica de valor esperado: puntaje * probabilidad
+class EvPlayerByPepe : public Jugador { // Basado en la logica de valor esperado: puntaje * probabilidad
 private:
     string nombreEstudiante;
 
@@ -65,7 +65,7 @@ private:
     }
 
 public:
-    JugadorFlores(string nom = "JugadorFlores") : Jugador(nom) {
+    EvPlayerByPepe(string nom = "EvPlayerByPepe") : Jugador(nom) {
         nombreEstudiante = "José Flores";
     }
 
@@ -174,7 +174,7 @@ private:
         return Recomendacion{nombreChica(v), puntosEsperados, guardar}; // devolvemos la recomendación
     }
 
-    // Escalera (corregida)
+    // Escalera
     Recomendacion analizarEscalera(const vector<int>& dados) const {
         const int objetivos[3][5] = {{1,2,3,4,5}, {2,3,4,5,6}, {1,3,4,5,6}};
 
@@ -476,15 +476,15 @@ private:
         for (int i = 0; i < 5; ++i) {
             bool conservado = false;
             for (int idx : guardar) if (idx == i) { conservado = true; break; }
-            if (!conservado) relanzar.push_back(i);    // ya queda en orden ascendente
+            if (!conservado) relanzar.push_back(i);   
         }
 
         int mejorIdx = 0, maxComunes = -1;
         for (int i = 0; i < (int)act.size(); ++i) {
             if (act[i].accion != "lanzar") continue;   // solo nos interesa lanzar
 
-            const vector<int>& idxs = act[i].indiceDados; // ya viene ordenado del motor
-            if (idxs == relanzar) return i;               // coincidencia exacta
+            const vector<int>& idxs = act[i].indiceDados; 
+            if (idxs == relanzar) return i;  // coincidencia exacta
 
             // Si no es exacta, contar intersección para encontrar la más parecida
             int comunes = 0;
@@ -503,7 +503,7 @@ private:
     }
 };
 
-const map<string, int> JugadorFlores::maxPts = { // Definición del mapa estático de puntajes máximos
+const map<string, int> EvPlayerByPepe::maxPts = { // Definición del mapa estático de puntajes máximos
     {"balas",4}, {"tontos",8}, {"trenes",12}, {"cuadras",16},
     {"quinas",20}, {"senas",24}, {"escalera",25}, {"full",35},
     {"poker",45}, {"grande",50}, {"grande2",50}
