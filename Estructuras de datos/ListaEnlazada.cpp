@@ -147,10 +147,10 @@ void tLista::invertirforma1(){
 
     char aux1, aux2;
     moveToStart();
-    for (int i = 0; i < listSize; i++){
+    for (int i = 0; i < listSize/2; i++){
         moveToPos(i);
         aux1 = getValue();
-        moveToPos(listSize - i);
+        moveToPos(listSize - i - 1);
         aux2 = getValue();
         replace(aux1);
         moveToPos(i);
