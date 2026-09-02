@@ -1,20 +1,21 @@
-#include "ListaEnlazada.hpp"
+#include "ListaEnlazadaDoble.hpp"
 
-// Constructor: Inicializa la lista vacía con un nodo centinela
+// Constructor
 tLista::tLista() {
     curr = tail = head = new tNodo;
     head->sig = NULL;
+    head->ant = NULL;
     listSize = 0;
     pos = 0;
 }
 
-// Destructor: Libera toda la memoria dinámica utilizada
+// Destructor
 tLista::~tLista() {
     clear();
-    delete head; // Elimina el nodo centinela
+    delete head;
 }
 
-// Vacía la lista y libera la memoria de los nodos con elementos
+// Vacía la lista
 void tLista::clear() {
     moveToStart();
     while (head->sig != NULL) {
@@ -22,89 +23,90 @@ void tLista::clear() {
         head->sig = temp->sig;
         delete temp;
     }
+    head->sig = NULL;
     curr = tail = head;
     listSize = 0;
     pos = 0;
 }
 
-// Inserta un elemento en la posición actual de 'curr'
+// Inserta después de 'curr'
 int tLista::insert(tElemLista item) {
     tNodo* aux = new tNodo;
     aux->info = item;
     aux->sig = curr->sig;
+    aux->ant = curr;
+
+    if (curr->sig != NULL) {
+        curr->sig->ant = aux;
+    }
     curr->sig = aux;
 
     if (tail == curr) {
-        tail = curr->sig; // Actualiza tail si se inserta al final
+        tail = aux;
     }
 
     listSize++;
     return pos;
 }
 
-// Agrega un elemento al final de la lista
+// Agrega al final de la lista
 void tLista::append(tElemLista item) {
     tNodo* aux = new tNodo;
     aux->info = item;
     aux->sig = NULL;
+    aux->ant = tail;
 
     tail->sig = aux;
     tail = aux;
     listSize++;
 }
 
-// Reemplaza el elemento en la posición actual
+// Reemplaza el elemento actual
 void tLista::replace(tElemLista item) {
     if (curr->sig != NULL) {
         curr->sig->info = item;
     }
 }
 
-// Elimina el elemento actual y lo retorna
+// Elimina el elemento actual
 tElemLista tLista::erase() {
     if (curr->sig == NULL) {
-        return '\0'; // Retorna el carácter nulo si no hay elemento a borrar
+        return '\0';
     }
 
     tNodo* temp = curr->sig;
     tElemLista item = temp->info;
 
-    if (tail == temp) {
-        tail = curr; // Si se borra el último elemento, se actualiza tail
+    curr->sig = temp->sig;
+    if (temp->sig != NULL) {
+        temp->sig->ant = curr;
+    } else {
+        tail = curr;
     }
 
-    curr->sig = temp->sig;
     delete temp;
     listSize--;
-
     return item;
 }
 
-// Mueve la posición actual al inicio de la lista
 void tLista::moveToStart() {
     curr = head;
     pos = 0;
 }
 
-// Mueve la posición actual al final de la lista
 void tLista::moveToEnd() {
     curr = tail;
     pos = listSize;
 }
 
-// Retrocede una posición el puntero 'curr'
+// Retroceso optimizado a O(1) usando el puntero 'ant'
 void tLista::prev() {
-    if (curr == head) return;
-
-    tNodo* temp = head;
-    while (temp->sig != curr) {
-        temp = temp->sig;
+    if (curr != head) {
+        curr = curr->ant;
+        pos--;
     }
-    curr = temp;
-    pos--;
 }
 
-// Avanza una posición el puntero 'curr'
 void tLista::next() {
     if (curr != tail) {
         curr = curr->sig;
@@ -112,7 +114,6 @@ void tLista::next() {
     }
 }
 
-// Mueve el cursor 'curr' a una posición p
 void tLista::moveToPos(unsigned int p) {
     if (p > listSize) return;
 
@@ -124,30 +125,24 @@ void tLista::moveToPos(unsigned int p) {
     }
 }
 
-// Retorna la cantidad de elementos en la lista
 unsigned int tLista::length() const {
     return listSize;
 }
 
-// Retorna la posición actual
 unsigned int tLista::currPos() const {
     return pos;
 }
 
-// Obtiene el valor del elemento actual
 tElemLista tLista::getValue() const {
     if (curr->sig == NULL) {
-        return '\0'; // Retorna el carácter nulo si está en la posición final o vacía
+        return '\0';
     }
     return curr->sig->info;
 }
 
-// Invierte la lista
-void tLista::invertirforma1(){
-
+void tLista::invertirforma1() {
     char aux1, aux2;
-    moveToStart();
-    for (int i = 0; i < listSize/2; i++){
+    for (unsigned int i = 0; i < listSize / 2; i++) {
         moveToPos(i);
         aux1 = getValue();
         moveToPos(listSize - i - 1);
