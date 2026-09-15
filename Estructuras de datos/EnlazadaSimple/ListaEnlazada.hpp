@@ -49,6 +49,11 @@ public:
     // Invertir
     void invertirforma1();
     void invertirforma2();
+    void invertirforma3();
+
+    //Odenar
+    void ordenar();
+    void swapElements();
 };
 
 #endif // LISTAENLAZADA_HPP

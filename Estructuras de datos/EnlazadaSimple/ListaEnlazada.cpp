@@ -142,6 +142,18 @@ tElemLista tLista::getValue() const {
     return curr->sig->info;
 }
 
+void tLista::swapElements() {
+    // Validar que existan el nodo actual y el posterior
+    if (curr->sig == NULL || curr->sig->sig == NULL) {
+        return;
+    }
+
+    // Intercambio de la información
+    tElemLista temp = curr->sig->info;
+    curr->sig->info = curr->sig->sig->info;
+    curr->sig->sig->info = temp;
+}
+
 // Invierte la lista
 void tLista::invertirforma1(){
     char aux1, aux2;
@@ -157,8 +169,44 @@ void tLista::invertirforma1(){
     }
 }
 
-void tLista::invertirforma2(){
- 
-    
+void tLista::invertirforma2(){ // Guardaremos en un array temporal
+
+    char* temp = new char[listSize];
+    moveToStart();
+    for (int i = 0; i < listSize; i++, next()){
+        temp[i] = curr->sig->info;
+    }
+    moveToStart();
+    for (int i = 0; i < listSize; i++, next()){
+        replace(temp[listSize - i - 1]);
+    }
+    delete[] temp;
+
+}
+
+void tLista::invertirforma3() {
+    tNodo* prev = NULL; // Nodo anterior
+    tNodo* actual = head->sig; // Primer nodo real
+    tNodo* siguiente = NULL; // Nodo siguiente
+    tail = actual; // El primer nodo real será el nuevo tail
+    for (int i = 0; i < listSize; i++) {
+        siguiente = actual->sig; // Guardo el nodo que viene para no perderlo
+        actual->sig = prev; // Lo reemplazo por el anterior
+        prev = actual; // El nodo actual se convierte en el "anterior" para la siguiente iteracion
+        actual = siguiente; // Es nuestro next() pero manual
+    }   
+    head->sig = prev; // Conectar centinela al nuevo inicio
+}
+
+void tLista::ordenar(){ // usare un Buble sort
+
+    for (int i = 0; i < listSize; i++){
+        moveToStart();
+        for (int j = 0; j < listSize - i - 1; j++, next()){
+            if (curr->sig->info > curr->sig->sig->info) {
+                swapElements();
+            }
+        }
+    }
 
 }
