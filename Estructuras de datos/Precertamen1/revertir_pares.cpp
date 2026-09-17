@@ -76,17 +76,64 @@ public:
     // TODO: IMPLEMENTA ESTE MÉTODO
     // =======================================================
     void revertirPares() {
-        // RESTRICCIONES DEL COMITÉ ESTANDARIZADOR / JUEZ:
-        // 1. Complejidad O(N).
-        // 2. NO puedes usar "new" (no crear nuevos nodos).
-        // 3. NO puedes intercambiar los valores "info".
-        // 4. Solo puedes modificar los punteros "sig" y "ant".
-        // 5. NO usar métodos de alto nivel (insert, erase, moveToPos).
-        
-        // PISTA: Tu primer nodo de datos es head->sig
-        
-        
-        
+        if (head->sig == NULL) return; // Lista vacía
+
+        tNodo* curr = head->sig;
+
+
+        while (curr != NULL) {
+            // Buscamos el inicio de una secuencia de pares
+            if (curr->info % 2 == 0) {
+                tNodo* inicio_pares = curr;
+                tNodo* previo_impar = curr->ant; // Puede ser el centinela, eso está bien
+
+                // Avanzamos hasta encontrar el fin de la secuencia de pares
+                tNodo* fin_pares = curr;
+                int contador = 0;
+                
+                while (fin_pares != NULL && fin_pares->info % 2 == 0) {
+                    contador++;
+                    curr = fin_pares->sig; // curr avanza para el futuro
+                    if (curr != NULL && curr->info % 2 == 0) {
+                        fin_pares = curr;
+                    } else {
+                        break;
+                    }
+                }
+
+                // Si encontramos al menos 2 pares contiguos, invertimos la sublista
+                if (contador >= 2) {
+                    tNodo* siguiente_impar = fin_pares->sig;
+                    
+                    // Proceso de inversión de punteros dentro de la sublista de pares
+                    tNodo* nodo_actual = inicio_pares;
+                    tNodo* temp = NULL;
+                    
+                    while (nodo_actual != siguiente_impar) {
+                        temp = nodo_actual->sig;
+                        // Intercambiamos sig y ant
+                        nodo_actual->sig = nodo_actual->ant;
+                        nodo_actual->ant = temp;
+                        
+                        nodo_actual = temp; // avanzo al sgte nodo
+                    }
+
+                    // Reconectamos la sublista invertida con el resto de la lista original
+                    previo_impar->sig = fin_pares;
+                    fin_pares->ant = previo_impar;
+                    
+                    inicio_pares->sig = siguiente_impar; // inicio_pares ahora es el final de la sublista
+                    if (siguiente_impar != NULL) {
+                        siguiente_impar->ant = inicio_pares;
+                    } else {
+                        // Si el siguiente es NULL, significa que la secuencia par llegó al final de la lista
+                        tail = inicio_pares;
+                    }
+                }
+            } else {
+                curr = curr->sig; // si no encontramos un par, pasamos de largo
+            }
+        }
     }
 };
 
