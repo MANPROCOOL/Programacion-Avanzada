@@ -63,27 +63,32 @@ public:
 // =======================================================
 // Se agregó "int &k" por referencia para saber de qué tamaño es el arreglo resultante
 Persona* datosAsistentes(AsistenciaEvento *AE, int &k) {
-    // RESTRICCIÓN: Complejidad O(k). 
-    // ESTÁ PROHIBIDO usar un for desde 0 hasta AE->getCantidadDeInscritos().
-
-    k = 0; 
+    // 1. Descubrir cuántos asistentes reales hay (k)
+    int j = 1; // Comenzamos a contar desde el 1er asistente
+    while (AE->selectAsistente(j) != -1) {
+        j++;
+    }
     
-    // 1. Necesitas descubrir cuántos asistentes reales hay (k) sin recorrer todo.
-    //    Usa un while llamando a AE->selectAsistente(j). Empieza buscando el j=1.
-    //    Sigue aumentando 'j' hasta que selectAsistente te retorne -1.
-    //    Cuando te retorne -1, ya sabes cuántos asistentes hay (k).
+    // Si salió del ciclo, el j actual devolvió -1. 
+    // Por lo tanto, la cantidad de asistentes es j - 1.
+    k = j - 1; 
     
-    // 2. Ahora que sabes k, crea el arreglo dinámico: 
-    //    Persona* arregloAsistentes = new Persona[k];
+    // Buenas prácticas: si no hay asistentes, retornamos nulo
+    if (k == 0) return nullptr;
     
-    // 3. Vuelve a iterar j desde 1 hasta k. 
-    //    - Obtén el índice real usando selectAsistente(j).
-    //    - Usa ese índice en getInscrito(indice) para traer los datos.
-    //    - Guárdalos en arregloAsistentes[j-1].
+    // 2. Crear el arreglo dinámico con el tamaño exacto 'k'
+    Persona* arregloAsistentes = new Persona[k];
     
-    // 4. Retorna el arreglo.
-
-    return nullptr;
+    // 3. Volver a iterar desde el 1er asistente hasta el k-ésimo
+    for (int i = 1; i <= k; i++) {
+        int indiceReal = AE->selectAsistente(i);
+        
+        // Guardamos en el arreglo (que sí usa índices desde 0, por ende i - 1)
+        arregloAsistentes[i - 1] = AE->getInscrito(indiceReal);
+    }
+    
+    // 4. Retornar el arreglo
+    return arregloAsistentes;
 }
 
 int main() {
