@@ -10,15 +10,45 @@ using namespace std;
 // Se permite consumir A y B. No se exige conservarlas.
 void merge(tPila& A, tPila& B, tPila& C) {
     tCola auxiliar;  // Unica estructura auxiliar permitida.
-
-    // ===== INICIO DE TU TRABAJO =====
-    // Implementa aqui el algoritmo.
-    // No declares otras variables, contadores ni estructuras auxiliares.
-    // No uses recursion para almacenar elementos en la pila de llamadas.
-    // Usa directamente topValue() o frontValue() para transferir valores con push() o enqueue().
-    // Comprueba size() > 0 antes de acceder o quitar un elemento.
-
-    // ===== FIN DE TU TRABAJO =====
+    // La pila A esta ascendente de tope a base, tengo que sacar y meter a C
+    // El problema es la pila B, Esta al revez, tengo que darla vuelta
+    while (B.size()){
+        auxiliar.enqueue(B.topValue());
+        B.pop();
+    }
+    while (auxiliar.size()){
+        B.push(auxiliar.frontValue());
+        auxiliar.dequeue();
+    }
+    while(A.size() && B.size()){
+        if (A.topValue() < B.topValue()){
+            C.push(A.topValue());
+            A.pop();
+        }
+        else if (B.topValue() < A.topValue()){
+            C.push(B.topValue());
+            B.pop();
+        }
+        else {
+            C.push(A.topValue());
+            C.push(B.topValue());
+            A.pop();
+            B.pop();      
+        }
+    }
+    if (!B.size()){
+        while(A.size()){
+            C.push(A.topValue());
+            A.pop();   
+        }
+    }
+    else if (!A.size()){
+        while(B.size()){
+            C.push(B.topValue());
+            B.pop();   
+        }
+    }
+    
 }
 
 int main() {
