@@ -2,15 +2,7 @@
 #include <iostream>
 #include <string>
 #include <initializer_list>
-
-// Pregunta 28: retornar una lista con los niveles que impiden que el
-// arbol sea lleno. Tiempo requerido: O(n).
-// Convencion de las pruebas: raiz en nivel 0; se listan en orden ascendente
-// los niveles existentes con menos de 2^nivel nodos. No se consideran
-// niveles posteriores al ultimo. El arbol vacio devuelve una lista vacia.
-// Un arbol lleno tiene dos hijos en cada nodo interno y todas sus hojas
-// en el mismo nivel.
-// Los TDA necesarios son locales: no modifiques ni compiles tus otros TDA.
+#include <math.h>
 
 struct tNodo {
     int info;
@@ -19,7 +11,7 @@ struct tNodo {
 };
 
 class tColaNodos {
-private:
+    private:
     struct Enlace {
         tNodo* info;
         Enlace* sig;
@@ -27,12 +19,12 @@ private:
     Enlace* frente;
     Enlace* fin;
     int tam;
-public:
+    public:
     tColaNodos() : frente(nullptr), fin(nullptr), tam(0) {}
     ~tColaNodos() { while (size()) dequeue(); }
     tColaNodos(const tColaNodos&) = delete;
     tColaNodos& operator=(const tColaNodos&) = delete;
-
+    
     int enqueue(tNodo* item) {
         Enlace* nuevo = new Enlace{item, nullptr};
         if (tam == 0) frente = nuevo;
@@ -58,7 +50,7 @@ public:
 
 // Lista de enteros con cursor; permite retornar por valor sin compartir nodos.
 class tLista {
-private:
+    private:
     struct Enlace {
         int info;
         Enlace* sig;
@@ -68,7 +60,7 @@ private:
     Enlace* cursor;
     int tam;
     int posicion;
-public:
+    public:
     tLista() : cabeza(nullptr), fin(nullptr), cursor(nullptr), tam(0), posicion(0) {}
     ~tLista() { clear(); }
     tLista(const tLista& otra) : tLista() {
@@ -118,15 +110,41 @@ public:
     }
 };
 
+// Pregunta 28: retornar una lista con los niveles que impiden que el
+// arbol sea lleno. Tiempo requerido: O(n).
+// Convencion de las pruebas: raiz en nivel 0; se listan en orden ascendente
+// los niveles existentes con menos de 2^nivel nodos. No se consideran
+// niveles posteriores al ultimo. El arbol vacio devuelve una lista vacia.
+// Un arbol lleno tiene dos hijos en cada nodo interno y todas sus hojas
+// en el mismo nivel.
+// Los TDA necesarios son locales: no modifiques ni compiles tus otros TDA.
+
 tLista esNoLleno(tNodo* raiz) {
     tLista resultado;
-    // ===== INICIO DE TU TRABAJO =====
-
-    // Implementa aqui. Puedes agregar funciones auxiliares.
-    // Borra esta linea al implementar tu solucion.
-    (void)raiz;
-
-    // ===== FIN DE TU TRABAJO =====
+    tColaNodos pendientes; // denuevo tengo que hacer un bfs
+    int nivel = 1, cantnodos = 1, sig = 0; // en que lvl estoy, 1 porque solo la raiz, nodos del sgte lvl
+     if (raiz != nullptr) {pendientes.enqueue(raiz);}
+    while (pendientes.size()){
+        tNodo* temp = pendientes.frontValue();
+        pendientes.dequeue();
+        if (temp->izq != nullptr){
+            pendientes.enqueue(temp->izq);
+            sig += 1;
+        }
+        if (temp->der != nullptr){
+            pendientes.enqueue(temp->der);
+            sig += 1;
+        }
+        cantnodos -= 1;
+        if (cantnodos == 0){
+            if (sig != pow(2, nivel) && sig != 0){
+                resultado.append(nivel);
+            }
+            nivel += 1;
+            cantnodos = sig;
+            sig = 0;
+        }
+    }
     return resultado;
 }
 
