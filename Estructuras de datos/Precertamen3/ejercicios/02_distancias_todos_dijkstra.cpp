@@ -50,15 +50,31 @@ const int SIN_COMPLETAR = -2; // Las pruebas detectan posiciones no escritas con
 
 // ===================== AUXILIAR IMPLEMENTADO =========================
 
+// Encuentra el vértice NOVISITADO que tiene la menor distancia acumulada en D.
+// Retorna el índice del vértice candidato o 'n' (centinela) si no queda ninguno alcanzable.
+// Implementa la selección de Dijkstra basada en un arreglo con complejidad O(|V|).+
+
 tVertice minVertex(tGrafo& G, int* D) {
-    const int n = G.nVertex();
-    tVertice minimo = n; // Centinela: todavia no hay candidato.
+    const int n = G.nVertex(); // Obtiene la cantidad total de vértices del grafo
+    
+    // Inicializa 'minimo' con el valor 'n' como centinela.
+    // Como los vértices válidos van de 0 a n-1, 'n' indica que aún no hay candidato.
+    tVertice minimo = n; 
+
+    // Recorre todos los vértices del grafo para buscar el de menor distancia
     for (tVertice v = 0; v < n; ++v) {
-        if (G.getMark(v) == NOVISITADO
-            && (minimo == n || D[v] < D[minimo])) {
-            minimo = v;
+        
+        // CONDICIÓN DE SELECCIÓN:
+        // 1. El vértice 'v' debe estar sin procesar (marca NOVISITADO).
+        // 2. Debe cumplirse al menos una de estas subcondiciones:
+        //    a) 'minimo == n': Es el primer vértice NOVISITADO encontrado.
+        //    b) 'D[v] < D[minimo]': Su distancia acumulada es estrictamente menor a la del candidato actual.
+        if (G.getMark(v) == NOVISITADO && (minimo == n || D[v] < D[minimo])) {
+            minimo = v; // Actualiza el candidato a vértice con la menor distancia conocida
         }
     }
+    // Retorna el índice del vértice elegido o 'n' si no hay ninguno elegible
+    // (ya sea porque todos fueron visitados o los restantes son inalcanzables)
     return minimo;
 }
 
@@ -69,18 +85,33 @@ tVertice minVertex(tGrafo& G, int* D) {
 // Esta funcion establece D[s] = 0 y modifica D y las marcas de G.
 
 void Dijkstra(tGrafo& G, int* D, tVertice s) {
-    const int n = G.nVertex();
-    D[s] = 0;
+    const int n = G.nVertex(); // Cantidad total de vértices en el grafo
+    
+    D[s] = 0; // Caso base: la distancia desde el origen s hacia sí mismo es 0
+
+    // En cada iteración se procesa el vértice no visitado más cercano
     for (int i = 0; i < n; ++i) {
+        // Busca el vértice no visitado con la menor distancia acumulada D[v]
         tVertice v = minVertex(G, D);
-        // No quedan vertices por visitar, o los restantes son inalcanzables.
+
+        // Condición de parada: no quedan vértices pendientes (v == n)
+        // o todos los restantes son inalcanzables desde 's' (D[v] == INFINITO)
         if (v == n || D[v] == INFINITO) return;
 
+        // Marca el vértice actual como visitado para evitar procesarlo de nuevo
         G.setMark(v, VISITADO);
+
+        // Iterar sobre todos los vecinos adyacentes 'w' del vértice 'v'
         for (tVertice w = G.first(v); w < n; w = G.next(v, w)) {
-            // Usar long long en la suma evita un desbordamiento temporal.
+            // RELAJACIÓN DE ARISTAS:
+            // Se calcula el costo de llegar a 'w' pasando por 'v'.
+            // Usamos 'long long' en la suma para prevenir integer overflow cuando D[v] es un valor elevado.
             const long long candidato = static_cast<long long>(D[v]) + G.weight(v, w);
-            if (candidato < D[w]) D[w] = static_cast<int>(candidato);
+
+            // Si el nuevo camino propuesto es más corto que la distancia almacenada actualmente en D[w]:
+            if (candidato < D[w]) {
+                D[w] = static_cast<int>(candidato); // Se actualiza con la menor distancia encontrada
+            }
         }
     }
 }
@@ -88,15 +119,20 @@ void Dijkstra(tGrafo& G, int* D, tVertice s) {
 // ===================== SOLUCION DEL EJERCICIO ========================
 
 void distanciasTodosLosPares(tGrafo& G, int** distancias) {
-    const int n = G.nVertex();
-    // Cada fila corresponde a un origen distinto.
+    const int n = G.nVertex(); // Cantidad total de vértices del grafo
+
+    // Calcula el camino mínimo tomando cada nodo 'origen' como punto de partida (una fila por origen)
     for (tVertice origen = 0; origen < n; ++origen) {
-        // Dijkstra exige distancias y marcas preparadas para CADA ejecucion.
-        // Se escribe directamente en la fila de ese origen: no hace falta copiar.
+        
+        // PREPARACIÓN DE ESTADO:
+        // Dijkstra requiere resetear la fila actual a INFINITO y desmarcar los vértices antes de cada iteración.
         for (tVertice v = 0; v < n; ++v) {
-            distancias[origen][v] = INFINITO;
-            G.setMark(v, NOVISITADO);
+            distancias[origen][v] = INFINITO; // Distancia inicial desconocida (asumida como infinita)
+            G.setMark(v, NOVISITADO);        // Limpia marcas de recorridos o ejecuciones anteriores
         }
+
+        // Ejecuta Dijkstra pasando directamente el puntero a la fila actual (distancias[origen]).
+        // Los resultados quedan escritos en su lugar final sin necesidad de matrices intermedias o copia de memoria.
         Dijkstra(G, distancias[origen], origen);
     }
 }
