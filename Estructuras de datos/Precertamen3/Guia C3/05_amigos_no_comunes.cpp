@@ -14,13 +14,28 @@ bool pendiente = false;
 }
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
-int amigosNoComunes(tGrafo& G, tVertice v1, tVertice v2, tVertice salida[]) {
-    (void)G;
-    (void)v1;
-    (void)v2;
-    (void)salida;
-    pendiente = true;
-    return 0;
+int amigosNoComunes(tGrafo& G, tVertice v1, tVertice v2, tVertice salida[]) { //ojo que salida es un array estatico
+
+    // necesito retornar los amigos de v2 que no sean amigos de v1
+    // voy a buscar los amigos de v2 y despues eliminare las coincidencias con v1
+    int cantidad = 0;
+    bool* temp = new bool[G.nVertex()];
+
+    for (tVertice v = G.first(v2); v < G.nVertex(); v = G.next(v2, v)){
+        temp[v] = 1;
+    }
+
+    for (tVertice v = G.first(v1); v < G.nVertex(); v = G.next(v1, v)){
+        temp[v] = 0;
+    }
+
+    for (tVertice v = G.first(v2); v < G.nVertex(); v = G.next(v2, v)){
+        if (temp[v] == 1){
+            salida[cantidad++]=v;
+        }
+    }
+    delete[] temp;
+    return cantidad;
 }
 
 namespace {

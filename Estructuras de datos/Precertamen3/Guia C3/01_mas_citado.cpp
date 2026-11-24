@@ -12,9 +12,41 @@ bool pendiente = false;
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
 tVertice masCitado(tGrafo& G) {
-    (void)G;
-    pendiente = true;
-    return 0;
+    const int n = G.nVertex();
+
+    // Si no hay artículos, devolvemos -1 según el esqueleto del ejercicio.
+    if (n == 0) return -1;
+
+    // Cada posición guarda las citas que recibe un artículo.
+    int* citas = new int[n](); // Los paréntesis en new int[n]() dejan todos los contadores en cero.
+
+    // Cada v es un artículo cuya bibliografía vamos a revisar.
+    for (tVertice v = 0; v < n; ++v) {
+        // first(v) entrega el primer artículo que cita v.
+        // next(v, w) entrega el siguiente después de w.
+        // Ambos devuelven n cuando ya no hay más vecinos.
+        for (tVertice w = G.first(v); w < n; w = G.next(v, w)) {
+            // El arco v → w significa que v cita a w.
+            // Por ejemplo, al ver 0 → 2, el artículo 2 recibe una cita.
+            ++citas[w];
+        }
+    }
+
+    // Ya contamos todas las citas. Partimos con el artículo 0
+    // como candidato y lo comparamos con cada artículo restante.
+    tVertice mejor = 0;
+    for (tVertice v = 1; v < n; ++v) {
+        // Actualizamos solo si v tiene más citas. En caso de empate
+        // queda el primer artículo encontrado, el de menor índice.
+        if (citas[v] > citas[mejor]) {
+            mejor = v;
+        }
+    }
+
+    delete[] citas;
+
+    // mejor guarda el identificador del artículo más citado.
+    return mejor;
 }
 
 namespace {
