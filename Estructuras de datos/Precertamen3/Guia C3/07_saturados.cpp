@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "tGrafo.hpp"
+#include "tCola.hpp"
 #include <algorithm>
 #include <vector>
 
@@ -14,10 +15,41 @@ bool pendiente = false;
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
 int saturados(tGrafo& G, tVertice salida[]) {
-    (void)G;
-    (void)salida;
-    pendiente = true;
-    return 0;
+
+    // supongo que hare un bfs, donde tendre 2 arreglos, en uno guardare la cantidad de arcos que salen y en el otro los que entran.
+    tCola cola;
+    int cuantos = 1;
+    int n = G.nVertex();
+    if (n == 0) return 0;
+    tVertice w = 0;
+    tVertice y;
+    cola.enqueue(w);
+    G.setMark(w, VISITADO);
+    int* entrantes = new int[n](); 
+    int* salientes = new int[n]();
+    while (cola.size()){
+        y = cola.frontValue(), cola.dequeue();
+        for (w = G.first(y); w != n; w = G.next(y, w)){
+            entrantes[w]++;
+            salientes[y]++;
+            if (G.getMark(w) == NOVISITADO){
+                cola.enqueue(w), G.setMark(w, VISITADO), cuantos++;
+            }
+        }
+        if (!cola.size() && cuantos < n)
+            for (int p = 0; p < n ; p++)
+                if (G.getMark(p) == NOVISITADO)
+                    cola.enqueue(p), G.setMark(p, VISITADO), cuantos++;
+    }
+    int sobrecargados = 0;
+    for(int i = 0; i < n; i++){
+        G.setMark(i, NOVISITADO);
+        if (salientes[i]-entrantes[i] < 0) 
+            salida[sobrecargados++] = i;
+    }
+    delete[] salientes;
+    delete[] entrantes;
+    return sobrecargados;
 }
 
 namespace {

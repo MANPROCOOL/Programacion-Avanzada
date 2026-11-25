@@ -13,9 +13,39 @@ bool pendiente = false;
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
 int minimaCantRutas(tGrafo& G) {
-    (void)G;
-    pendiente = true;
-    return 0;
+
+    int n = G.nVertex();
+    if (n <= 1){return 0;}
+    int rutas = 0;
+    tVertice pendiente = n;
+
+    for (tVertice v = 0; v < n; v++) {
+        tVertice w = G.first(v);
+        if (w == v)
+            w = G.next(v, w);  // Ignora un lazo hacia sí misma.
+
+        if (w < n) // si el nodo si tiene vecinos, no me interesa
+            continue;
+
+        if (pendiente == n) { // si encontre un nodo solo, pero no hay otro nodo solo pendiente
+            pendiente = v; // declaro ese nodo como pendiente
+        } else {
+            G.setEdge(pendiente, v, 1); // encontre 2 nodos solos, los conecto entre si
+            rutas++;
+            pendiente = n; // borro el nodo que tenia pendiente
+        }
+    }
+
+    if (pendiente < n) { // si me quedo un nodo pendiente
+        tVertice otra = 0; // lo tratare de conectar con el nodo 0
+        if (pendiente == 0) // y si el nodo 0 es el unico que esta aislado?
+            otra = 1; // lo conecto con otro nodo que exista
+
+        G.setEdge(pendiente, otra, 1);
+        rutas++;
+    }
+
+    return rutas;
 }
 
 namespace {
@@ -39,11 +69,20 @@ void prueba(const char* nombre, T obtenido, T esperado) {
 }
 
 int main() {
-    tGrafo g(5,false); g.setEdge(0,1,1);
-    prueba("Tres aisladas",minimaCantRutas(g),2);
-    g.setEdge(2,3,1);
-    prueba("Una aislada",minimaCantRutas(g),1);
-    g.setEdge(3,4,1);
-    prueba("Dos componentes sin aisladas",minimaCantRutas(g),0);
+    tGrafo gTres(5, false);
+    gTres.setEdge(0, 1, 1);
+    prueba("Tres aisladas", minimaCantRutas(gTres), 2);
+
+    tGrafo gUna(5, false);
+    gUna.setEdge(0, 1, 1);
+    gUna.setEdge(2, 3, 1);
+    prueba("Una aislada", minimaCantRutas(gUna), 1);
+
+    tGrafo gDosComponentes(5, false);
+    gDosComponentes.setEdge(0, 1, 1);
+    gDosComponentes.setEdge(2, 3, 1);
+    gDosComponentes.setEdge(3, 4, 1);
+    prueba("Dos componentes sin aisladas", minimaCantRutas(gDosComponentes), 0);
+
     return errores == 0 ? 0 : 1;
 }

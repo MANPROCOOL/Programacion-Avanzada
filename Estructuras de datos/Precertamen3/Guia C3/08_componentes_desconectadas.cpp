@@ -31,9 +31,15 @@ void BFS(tGrafo& G, tVertice s) {
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
 int componentesDesconectadas(tGrafo* G) {
-    (void)G;
-    pendiente = true;
-    return 0;
+    // llamare varias veces al bfs, y sumare 1 cada vez que lo llamo
+    int cuantos = 0;
+    int n = G->nVertex();
+    for (int i = 0; i < n; i++){
+        if (G->getMark(i) == NOVISITADO){
+            cuantos++, BFS(*G, i);
+        }
+    }
+    return cuantos;
 }
 
 namespace {

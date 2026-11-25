@@ -4,7 +4,7 @@ CPPFLAGS += -I.. -I.
 
 NUMEROS := 01 05 06 07 08 18 21 24
 FUENTES := $(foreach n,$(NUMEROS),$(wildcard $(n)_*.cpp))
-COLA := 08 21 24
+COLA := 07 08 21 24
 .DEFAULT_GOAL := ayuda
 .NOTPARALLEL:
 
