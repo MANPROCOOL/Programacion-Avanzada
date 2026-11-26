@@ -16,12 +16,35 @@ bool pendiente = false;
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
 int listar_infectados(tGrafo& G, tVertice origen, int cd, tVertice salida[]) {
-    (void)G;
-    (void)origen;
-    (void)cd;
-    (void)salida;
-    pendiente = true;
-    return 0;
+
+    // simplemente tengo que implementar un bfs que se detenga en la iteracion cd
+    int indice = 0;
+    int nivelactual = 1;
+    int siguientenivel = 0;
+    int iteraciones = cd;
+    tCola restantes;
+    tVertice first = origen;
+    tVertice last;
+    restantes.enqueue(first);
+    salida[indice++] = first;
+    G.setMark(first, VISITADO);
+    while (restantes.size() && iteraciones){
+        last = restantes.frontValue(), restantes.dequeue(), nivelactual--;
+        for (first = G.first(last); first < G.nVertex(); first = G.next(last, first)){
+            if (G.getMark(first) == NOVISITADO){
+                G.setMark(first, VISITADO), siguientenivel++, restantes.enqueue(first);
+                salida[indice++] = first;
+            }
+        }
+        if (nivelactual == 0){
+            iteraciones--, nivelactual = siguientenivel, siguientenivel = 0;
+
+        }
+    }
+    for (int i = 0; i < G.nVertex(); i++){
+        G.setMark(i, NOVISITADO);
+    }
+    return indice;
 }
 
 namespace {

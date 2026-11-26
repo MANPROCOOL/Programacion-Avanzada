@@ -37,12 +37,23 @@ void Dijkstra(tGrafo& G, int D[], tVertice origen) {
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
 tVertice asignar_conductor(tVertice pasajero, tGrafo& G, tVertice* conductores, int nc) {
-    (void)pasajero;
-    (void)G;
-    (void)conductores;
-    (void)nc;
-    pendiente = true;
-    return 0;
+
+    // Debo usar dijkstra desde cada nodo uber, asi encontrare el camino mas corto hasta el nodo pasajero
+    // Podria usar dijkstra desd eel nodo pasajero, pero estamos frente a un grafo dirigido
+    // Tengo el numero de conductores, asique todo bien
+
+    int n = G.nVertex();
+    int* distancias = new int[n];
+    int minima = 2147483647;
+    tVertice mejor = n;
+    for (int i = 0; i < nc; i++){
+        Dijkstra(G, distancias, conductores[i]);
+        if (distancias[pasajero] < minima)
+            minima = distancias[pasajero], mejor = conductores[i];
+    }
+    if (mejor == n) return -1;
+    delete[] distancias;
+    return mejor;
 }
 
 namespace {

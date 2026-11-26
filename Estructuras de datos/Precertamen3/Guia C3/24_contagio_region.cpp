@@ -14,11 +14,10 @@ bool pendiente = false;
 
 // TODO: desarrolla el ejercicio aquí. Elimina la marca pendiente al resolverlo.
 bool contagioRegion(tGrafo& G, tVertice inicio, const int grado[]) {
-    (void)G;
-    (void)inicio;
-    (void)grado;
-    pendiente = true;
-    return false;
+
+    // Tengo que usar un bfs e ir comparando las distancias entre comunas adyacentes y grados
+    // ademas tendre un arreglo booleano con todos los vertices para saber si estan contagiados
+
 }
 
 namespace {
