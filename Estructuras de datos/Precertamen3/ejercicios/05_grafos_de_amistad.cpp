@@ -26,18 +26,74 @@ g++ -std=c++11 -Wall -Wextra -Wpedantic ejercicios/05_grafos_de_amistad.cpp tGra
 #include <iostream>
 
 int contarAmigosIndirectos(tGrafo& G, tVertice v) {
-    // TODO: implementar el inciso a).
-    (void)G;
-    (void)v;
-    return -2;
+
+    int acumulador = 0;
+    int iteracion = 2;
+    int actual = 1, sgte = 0;
+    tVertice w, z;
+    tCola pendientes;
+    int n = G.nVertex();
+
+    for(int i = 0; i < n; i++) 
+        G.setMark(i, NOVISITADO);
+
+    pendientes.enqueue(v), G.setMark(v, VISITADO);
+
+    while (pendientes.size() && iteracion){
+        w = pendientes.frontValue(), pendientes.dequeue();
+        actual--;
+        for (z = G.first(w); z < n; z = G.next(w, z)){
+            if (G.getMark(z) == NOVISITADO){
+                G.setMark(z, VISITADO);
+                pendientes.enqueue(z);
+                sgte++;
+                if (iteracion == 1)
+                    acumulador++;
+            }
+        } 
+        if (actual == 0){
+            actual = sgte;
+            sgte = 0;
+            iteracion--;
+        }
+    }
+    return acumulador;
 }
 
 int distanciaSocial(tGrafo& G, tVertice v, tVertice u) {
     // TODO: implementar el inciso b).
-    (void)G;
-    (void)v;
-    (void)u;
-    return -2;
+    bool encontrado = true;
+    int iteracion = 0;
+    int actual = 1, sgte = 0;
+    tVertice w, z;
+    tCola pendientes;
+    int n = G.nVertex();
+
+    for(int i = 0; i < n; i++) 
+        G.setMark(i, NOVISITADO);
+
+    pendientes.enqueue(v), G.setMark(v, VISITADO);
+
+    while (pendientes.size() && encontrado){
+        w = pendientes.frontValue(), pendientes.dequeue();
+        actual--;
+        for (z = G.first(w); z < n; z = G.next(w, z)){
+            if (z == u)
+                encontrado = false;
+            if (G.getMark(z) == NOVISITADO){
+                G.setMark(z, VISITADO);
+                pendientes.enqueue(z);
+                sgte++;
+            }
+        } 
+        if (actual == 0){
+            actual = sgte;
+            sgte = 0;
+            iteracion++;
+        }
+    }
+    if (encontrado) return -1;
+    return iteracion - 1;
 }
 
 bool probarCaso(const char* nombre, int obtenido, int esperado) {
