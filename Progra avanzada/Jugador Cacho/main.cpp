@@ -26,7 +26,7 @@ int main() {
       []() { return std::make_shared<JugadorChico>("Nicolas soto"); }); // <-- NUEVO
 
   // Ejecución en paralelo
-  t.runParallel(100000);
+  t.runParallel(10000);
   t.displayResults();
 
   return 0;
